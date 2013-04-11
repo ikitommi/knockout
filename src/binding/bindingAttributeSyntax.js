@@ -208,10 +208,14 @@
         return context ? context['$data'] : undefined;
     };
 
+    // exception handling in bindings
+    ko.safeMode = false;
+
     ko.exportSymbol('bindingHandlers', ko.bindingHandlers);
     ko.exportSymbol('applyBindings', ko.applyBindings);
     ko.exportSymbol('applyBindingsToDescendants', ko.applyBindingsToDescendants);
     ko.exportSymbol('applyBindingsToNode', ko.applyBindingsToNode);
     ko.exportSymbol('contextFor', ko.contextFor);
     ko.exportSymbol('dataFor', ko.dataFor);
+    ko.exportSymbol('safeMode', ko.safeMode);
 })();

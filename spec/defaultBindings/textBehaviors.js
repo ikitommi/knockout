@@ -46,4 +46,14 @@ describe('Binding: Text', function() {
         expect(testNode).toContainText("xxx ");
         expect(testNode).toContainHtml("xxx <!--ko text: undefined--><!--/ko-->");
     });
+
+    it('Should assign empty value to the node if safeMode for invalid bindings', function () {
+        var model = {kikka: {kukka: "value"}};
+        testNode.innerHTML = "<span data-bind='text:kakka'></span>";
+        ko.safeMode = true;
+        ko.applyBindings(model, testNode);
+        ko.safeMode = false;
+        expect(testNode.childNodes[0].textContent || testNode.childNodes[0].innerText).toEqual("");
+    });
+
 });
