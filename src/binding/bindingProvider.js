@@ -36,11 +36,18 @@
                 var bindingFunction = createBindingsStringEvaluatorViaCache(bindingsString, this.bindingCache);
                 return bindingFunction(bindingContext, node);
             } catch (ex) {
-              if(!ko.safeMode) {
                 ex.message = "Unable to parse bindings.\nBindings value: " + bindingsString + "\nMessage: " + ex.message;
                 throw ex;
-              }
             }
+        },
+
+        // The following function is only used internally by this default provider.
+        // It's not part of the interface definition for a general binding provider.
+        'safeParseBindingsString': function(bindingsString, bindingContext, node) {
+            try {
+                var bindingFunction = createBindingsStringEvaluatorViaCache(bindingsString, this.bindingCache);
+                return bindingFunction(bindingContext, node);
+            } catch (ex) {}
         }
     });
 

@@ -50,9 +50,25 @@ describe('Binding: Text', function() {
     it('Should assign empty value to the node if safeMode for invalid bindings', function () {
         var model = {kikka: {kukka: "value"}};
         testNode.innerHTML = "<span data-bind='text:kakka'></span>";
-        ko.safeMode = true;
+        ko.bindingProvider.instance.parseBindingsString = function(bindingsString, bindingContext, node) {
+
+          function createBindingsStringEvaluatorViaCache(bindingsString, cache) {
+              return cache[bindingsString] || (cache[bindingsString] = createBindingsStringEvaluator(bindingsString));
+          }
+
+          function createBindingsStringEvaluator(bindingsString) {
+              var rewrittenBindings = ko.expressionRewriting.preProcessBindings(bindingsString),
+                  functionBody = "with($context){with($data||{}){return{" + rewrittenBindings + "}}}";
+              return new Function("$context", "$element", functionBody);
+          }
+
+          try {
+              var bindingFunction = createBindingsStringEvaluatorViaCache(bindingsString, this.bindingCache);
+              return bindingFunction(bindingContext, node);
+          } catch (ex) {}
+        };
+        //ko.bindingProvider.instance.parseBindingsString = ko.bindingProvider.instance.safeParseBindingsString;
         ko.applyBindings(model, testNode);
-        ko.safeMode = false;
         expect(testNode.childNodes[0].textContent || testNode.childNodes[0].innerText).toEqual("");
     });
 
